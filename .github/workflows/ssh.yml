@@ -1,4 +1,4 @@
-name: sevda
+name: candle
 
 on:
 #  schedule:
@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      REPO_ORIGIN: https://github.com/Shabakebehdasht/h-dashboard.git
-      WF_NAME: sevda
+      REPO_ORIGIN: https://github.com/nashenas7/h-dashboard.git
+      WF_NAME: candle
 
     steps:
       - name: 1. Checkout Repository
@@ -123,8 +123,8 @@ jobs:
           cd h-dashboard
 
           # Set git identity for commits
-          git config user.name "Shabakebehdasht"
-          git config user.email "Shabakebehdasht@users.noreply.github.com"
+          git config user.name "nashenas7"
+          git config user.email "nashenas7@users.noreply.github.com"
 
           # Fetch latest origin/beta
           git fetch origin beta
@@ -258,7 +258,7 @@ jobs:
           # 4. Install MCP servers + the shadcn/improve skill.
           #    4a. Laravel Boost MCP (php artisan boost:mcp — provided by laravel/boost)
           #        Must run inside h-dashboard: `composer require` in the workflow's
-          #        working dir (the my-sev workspace) would install the package into
+          #        working dir (the my-can workspace) would install the package into
           #        the wrong project and litter composer.json/vendor/ at its root.
           cd /home/runner/h-dashboard
           composer require laravel/boost --no-interaction 2>&1 | tail -3 || true
@@ -334,7 +334,7 @@ jobs:
                 && echo '✅ Seed result sent to Telegram' \
                 || echo '⚠️ Seed result failed to send'
             else
-              hermes send --to telegram "sevda online and ready." \
+              hermes send --to telegram "candle online and ready." \
                 && echo '✅ Welcome message sent to Telegram' \
                 || echo '⚠️ Welcome message failed to send'
             fi
@@ -355,16 +355,16 @@ jobs:
             echo "[$i/330] Server is active (SSH + Laravel on port 8000)..."
           done
 
-      - name: 16. Sync hermes state & 9router data back to my-sev
+      - name: 16. Sync hermes state & 9router data back to my-can
         if: always()
         env:
           GH_TOKEN: ${{ secrets.MY_PAT }}
         run: |
           cd "${GITHUB_WORKSPACE:-.}"
-          git config user.name "Shabakebehdasht"
-          git config user.email "Shabakebehdasht@users.noreply.github.com"
+          git config user.name "nashenas7"
+          git config user.email "nashenas7@users.noreply.github.com"
           # Authenticate with PAT for push
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/Shabakebehdasht/my-sev.git"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/nashenas7/my-can.git"
 
           H=/home/runner/.hermes
           HDEST=hermes
@@ -392,11 +392,11 @@ jobs:
             echo 'ℹ️ No changes to commit'
           else
             git add hermes/ 9router/ 2>/dev/null || true
-            git commit -m "Sync hermes state & 9router data from sevda instance"
+            git commit -m "Sync hermes state & 9router data from candle instance"
             # Pull first in case another run pushed before us
             git pull --rebase origin "${{ github.ref_name }}" || true
             git push origin "${{ github.ref_name }}" || echo '⚠️ Push failed — changes saved locally'
-            echo '✅ Hermes & 9router data synced to my-sev'
+            echo '✅ Hermes & 9router data synced to my-can'
           fi
 
       - name: 17. Tailscale Logout (cleanup on shutdown)
